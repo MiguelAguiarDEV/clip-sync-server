@@ -89,18 +89,14 @@ func (h *Hub) Broadcast(userID, fromDevice string, payload []byte) {
 	}
 
 	// Recolecta todos los dispositivos del usuario excepto el remitente
-	subs := make([]*sub, 0, len(m))
 	for id, s := range m {
-		if id != fromDevice {
-			subs = append(subs, s)
+		if id == fromDevice {
+			continue
+		}
+		select {
+		case s.ch <- payload: // intento de envío
+		default: // cola llena ⇒ se descarta (no bloquea)
 		}
 	}
 	h.mu.RUnlock()
-
-	for _, s := range subs {
-		select {
-		case s.ch <- payload: // intenta enviar
-		default: // si la cola está llena, lo saltamos (no bloquea)
-		}
-	}
 }
