@@ -12,7 +12,6 @@ func TestHealthOK(t *testing.T) {
 	defer srv.Close()
 
 	resp, err := http.Get(srv.URL + "/health")
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -21,9 +20,7 @@ func TestHealthOK(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("want 200, got %d", resp.StatusCode)
 	}
-
 	b, _ := io.ReadAll(resp.Body)
-
 	if string(b) != "ok" {
 		t.Fatalf("want ok, got %q", b)
 	}

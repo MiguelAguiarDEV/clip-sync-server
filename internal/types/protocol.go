@@ -12,9 +12,9 @@ type Clip struct {
 	MsgID     string `json:"msg_id"`
 	Mime      string `json:"mime"`
 	Size      int    `json:"size"`
-	Data      []byte `json:"data,omitempty"`       // si es pequeño (≤ MaxInlineBytes)
-	UploadURL string `json:"upload_url,omitempty"` // si es grande
-	From      string `json:"from"`                 // lo rellenará el server
+	Data      []byte `json:"data,omitempty"`       // si es pequeño
+	UploadURL string `json:"upload_url,omitempty"` // si es grande (HTTP)
+	From      string `json:"from"`                 // lo rellena el server
 }
 
 type Envelope struct {
