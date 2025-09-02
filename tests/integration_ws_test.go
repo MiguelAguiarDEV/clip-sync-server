@@ -37,7 +37,6 @@ func TestWSBroadcastSmallClip(t *testing.T) {
 	}
 	defer cB.Close(websocket.StatusNormalClosure, "")
 
-	// hello
 	if err := wsjson.Write(ctx, cA, types.Envelope{
 		Type:  "hello",
 		Hello: &types.Hello{Token: "u1", UserID: "u1", DeviceID: "A"},
@@ -51,7 +50,6 @@ func TestWSBroadcastSmallClip(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// A envía clip pequeño
 	payload := []byte("hola")
 	if err := wsjson.Write(ctx, cA, types.Envelope{
 		Type: "clip",
@@ -60,7 +58,6 @@ func TestWSBroadcastSmallClip(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// B recibe
 	var got types.Envelope
 	if err := wsjson.Read(ctx, cB, &got); err != nil {
 		t.Fatal(err)
@@ -75,7 +72,6 @@ func TestWSBroadcastSmallClip(t *testing.T) {
 		t.Fatalf("from=%q", got.Clip.From)
 	}
 
-	// A no debe recibir su propio mensaje
 	shortCtx, cancel2 := context.WithTimeout(context.Background(), 50*time.Millisecond)
 	defer cancel2()
 	var nothing types.Envelope

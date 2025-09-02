@@ -9,14 +9,10 @@ import (
 
 func NewMux() http.Handler {
 	mux := http.NewServeMux()
-
-	// Healthcheck
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))
 	})
-
-	// Hub + WebSocket /ws
 	h := hub.New(32)
 	wss := &ws.Server{
 		Hub: h,

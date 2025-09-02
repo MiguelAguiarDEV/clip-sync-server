@@ -26,17 +26,18 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 
-	// Handshake: "hello"
 	var env types.Envelope
 	if err := wsjson.Read(ctx, c, &env); err != nil || env.Type != "hello" || env.Hello == nil {
 		c.Close(websocket.StatusProtocolError, "need hello")
 		return
 	}
+
 	userID, ok := s.Auth(env.Hello.Token)
 	if !ok {
 		c.Close(websocket.StatusPolicyViolation, "auth")
 		return
 	}
+
 	deviceID := env.Hello.DeviceID
 	if deviceID == "" {
 		c.Close(websocket.StatusProtocolError, "need device_id")
@@ -46,7 +47,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	outCh, leave := s.Hub.Join(userID, deviceID)
 	defer leave()
 
-	// Writer: del Hub → cliente
 	go func(ctx context.Context) {
 		for msg := range outCh {
 			_ = c.Write(ctx, websocket.MessageText, msg)
@@ -54,7 +54,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		c.Close(websocket.StatusNormalClosure, "")
 	}(ctx)
 
-	// Reader: del cliente → Hub
 	for {
 		var in types.Envelope
 		if err := wsjson.Read(ctx, c, &in); err != nil {
