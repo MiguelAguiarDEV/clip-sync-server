@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"clip-sync/server/internal/app"
-	"clip-sync/server/internal/types"
+	"clip-sync/server/pkg/types"
 
 	"github.com/coder/websocket"
 	"github.com/coder/websocket/wsjson"
